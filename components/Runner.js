@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { MdFastfood } from "react-icons/md";
-import { FiPlay } from "react-icons/fi";
+import { FiPlay, FiRefreshCcw } from "react-icons/fi";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
+import GetRecipe from "@/db/Get";
+import "@/custom/custom.css";
 
 export default function Runner() {
   const [code] = useState(`
@@ -28,9 +30,19 @@ axios.get(url, { headers })
   });
   `);
 
-  const [pages, setPages] = useState("");
-
+  const [pages, setPages] = useState("1");
   const [sliderRef] = useKeenSlider();
+  const [recipe, setRecipe] = useState([]);
+
+  const HandleRun = async (e) => {
+    try {
+      e.preventDefault();
+      const result = await GetRecipe(pages);
+      setRecipe(result);
+    } catch (error) {
+      throw new Error("failed to fetch");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
@@ -50,27 +62,38 @@ axios.get(url, { headers })
 
           <div
             ref={sliderRef}
-            className="keen-slider w-full mt-6 h-full overflow-hidden"
+            className="keen-slider w-full mt-6 h-full overflow-y-auto"
             style={{ maxWidth: "500px" }}
           >
-            <div className="keen-slider__slide flex justify-center items-center w-24 h-24 bg-blue-500 rounded-lg">
-              1
-            </div>
-            <div className="keen-slider__slide flex justify-center items-center w-24 h-24 bg-green-500 rounded-lg">
-              2
-            </div>
-            <div className="keen-slider__slide flex justify-center items-center w-24 h-24 bg-yellow-500 rounded-lg">
-              3
-            </div>
-            <div className="keen-slider__slide flex justify-center items-center w-24 h-24 bg-red-500 rounded-lg">
-              4
-            </div>
-            <div className="keen-slider__slide flex justify-center items-center w-24 h-24 bg-purple-500 rounded-lg">
-              5
-            </div>
-            <div className="keen-slider__slide flex justify-center items-center w-24 h-24 bg-teal-500 rounded-lg">
-              6
-            </div>
+            {recipe.length > 0 ? (
+              recipe.map((rec, index) => (
+                <div
+                  key={index}
+                  className="keen-slider__slide flex justify-center items-center w-24 h-24 bg-blue-500 rounded-lg"
+                >
+                  <div className="p-3 capitalize">
+                    <p>recipeName : {rec.name}</p>
+                    <p>duration : {rec.minutes}</p>
+                    <p>
+                      calories: {rec.nutrition.calories}, fat:
+                      {rec.nutrition.fat}, sugar:
+                      {rec.nutrition.sugar}, sodium: {rec.nutrition.sodium},
+                      protein: {rec.nutrition.protein}, saturated_fat:
+                      {rec.nutrition.saturated_fat}, carbohydrates:
+                      {rec.nutrition.carbohydrates},
+                    </p>
+                    <p>{rec.n_steps}</p>
+                    <p>{rec.ingredients.join(", ")}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="keen-slider__slide flex justify-center items-center w-24 h-24 bg-gray-500 rounded-lg">
+                <p className="flex flex-col items-center justify-center text-sm gap-3">
+                  Fetch recipe <FiRefreshCcw className="refresh" />
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -96,9 +119,7 @@ axios.get(url, { headers })
               />
             </div>
 
-            <button
-              className="flex items-center gap-2 text-white p-2"
-            >
+            <button className="flex items-center gap-2 text-white p-2">
               Run
               <FiPlay />
             </button>
