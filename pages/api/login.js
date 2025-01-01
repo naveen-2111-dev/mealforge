@@ -47,9 +47,14 @@ export default async function POST(req, res) {
 
     const Access = jwt.sign(payload, secret, options);
 
+    const cookieData = JSON.stringify({
+      access: Access,
+      email: email,
+    });
+
     res.setHeader(
       "Set-Cookie",
-      serialize("Token", Access, {
+      serialize("Token", cookieData, {
         path: "/",
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",

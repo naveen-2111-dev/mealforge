@@ -5,10 +5,12 @@ import Mac from "@/public/mac.png";
 import Logo from "@/public/logo.png";
 import Image from "next/image";
 import { GiBrain } from "react-icons/gi";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const searchInputRef = useRef(null);
+  const router = useRouter();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -114,7 +116,13 @@ export default function Navbar() {
             />
           </svg>
         </a>
-        <button className="px-4 py-2 bg-white text-black text-sm rounded hover:bg-gray-200 transition">
+        <button
+          className="px-4 py-2 bg-white text-black text-sm rounded hover:bg-gray-200 transition"
+          onClick={() => {
+            /* router.push("/auth/Login/") */
+            console.log("clicked");
+          }}
+        >
           Login
         </button>
       </div>
