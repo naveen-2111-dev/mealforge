@@ -5,6 +5,7 @@ import "@/custom/custom.css";
 import Image from "next/image";
 import Fire from "@/public/fire.gif";
 import Runner from "@/components/Runner";
+import Logo from "@/public/logo.png";
 
 export default function Home() {
   const handleCopy = (code) => {
@@ -17,12 +18,20 @@ export default function Home() {
       <Navbar />
       <div className="relative h-screen">
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center px-4">
-          <h1 className="text-black text-3xl sm:text-5xl lg:text-7xl whitespace-nowrap">
+          <Image
+            src={Logo}
+            alt="logo"
+            className="bg-black rounded-full mx-auto"
+            height={100}
+            width={100}
+          />
+          <h1 className="text-black text-3xl sm:text-5xl lg:text-7xl whitespace-nowrap mt-4">
             Welcome to MealForge
           </h1>
           <p className="text-sm sm:text-base lg:text-lg text-gray-700 max-w-lg sm:max-w-xl mx-auto mt-4 mb-6">
-            "MealForge is an intuitive recipe API service that helps developers
-            easily integrate recipes and ingredient search into their apps."
+            &quot;MealForge is an intuitive recipe API service that helps
+            developers easily integrate recipes and ingredient search into their
+            apps.&quot;
           </p>
           <div className="p-2 flex flex-row sm:flex-row items-center gap-4 bg-white shadow-lg rounded-full w-fit mx-auto mt-8">
             <input
@@ -151,7 +160,9 @@ export default App;`,
               <span className="text-sm font-medium">{snippet.title}</span>
             </div>
             <div className="bg-black text-white p-4 overflow-x-auto max-w-full rounded-b-lg relative">
-              <code className="block whitespace-pre">{snippet.code}</code>
+              <div className="whitespace-pre overflow-x-auto">
+                <code className="block">{snippet.code}</code>
+              </div>
               <button
                 onClick={() => handleCopy(snippet.code)}
                 className="absolute top-2 right-2 p-2 bg-gray-800 text-white rounded-full"
