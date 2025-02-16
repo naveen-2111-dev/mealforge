@@ -2,7 +2,7 @@ import ConnectDb from "@/lib/connect";
 import { isAuthenticated } from "./middleware";
 import bcrypt from "bcrypt";
 import Joi from "joi";
-import axios from "axios";
+import machineUuid from "machine-uuid";
 
 const validation = Joi.object({}).empty().unknown(false);
 let premium = false;
@@ -48,12 +48,10 @@ export default async function GET(req, res) {
         }
 
         let ip = null;
-
         try {
-          const response = await axios.get("https://api.ipify.org?format=json");
-          ip = response.data.ip;
-        } catch (error) {
-          res.status(500).json({ error: "Failed to fetch public IP" });
+          ip = await machineUuid();
+        } catch (err) {
+          console.error("Error fetching UUID:", err);
           ip = null;
         }
 
