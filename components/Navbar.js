@@ -119,7 +119,7 @@ export default function Navbar() {
         <button
           className="px-4 py-2 bg-white text-black text-sm rounded hover:bg-gray-200 transition"
           onClick={() => {
-            /* router.push("/auth/Login/") */
+            router.push("/auth/Login/");
             console.log("clicked");
           }}
         >
