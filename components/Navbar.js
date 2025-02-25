@@ -6,6 +6,7 @@ import Logo from "@/public/logo.png";
 import Image from "next/image";
 import { GiBrain } from "react-icons/gi";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -76,15 +77,24 @@ export default function Navbar() {
         }`}
       >
         <ul className="flex gap-4 md:gap-6 items-center">
-          <li className="hover:text-gray-300 cursor-pointer flex items-center gap-2">
+          <Link
+            href="#"
+            className="hover:text-gray-300 cursor-pointer flex items-center gap-2"
+          >
             Guide <GiBrain />
-          </li>
-          <li className="hover:text-gray-300 cursor-pointer flex items-center gap-2 capitalize">
-            Api
-          </li>
-          <li className="hover:text-gray-300 cursor-pointer">Dashboard</li>
-          <li className="hover:text-gray-300 cursor-pointer">Home</li>
-          <li className="hover:text-gray-300 cursor-pointer">About</li>
+          </Link>
+          <Link
+            href="/c/dashboard"
+            className="hover:text-gray-300 cursor-pointer"
+          >
+            Dashboard
+          </Link>
+          <Link href="#" className="hover:text-gray-300 cursor-pointer">
+            Home
+          </Link>
+          <Link href="#" className="hover:text-gray-300 cursor-pointer">
+            About
+          </Link>
         </ul>
         <div className="flex items-center bg-gray-800 p-2 rounded-lg">
           <input
@@ -133,13 +143,24 @@ export default function Navbar() {
         } absolute top-14 right-0 w-full bg-black text-white`}
       >
         <ul className="flex flex-col gap-4 p-4">
-          <li className="hover:text-gray-300 cursor-pointer flex items-center gap-3">
+          <Link
+            href="#"
+            className="hover:text-gray-300 cursor-pointer flex items-center gap-3"
+          >
             Guide <GiBrain />
-          </li>
-          <li className="hover:text-gray-300 cursor-pointer">API</li>
-          <li className="hover:text-gray-300 cursor-pointer">Dashboard</li>
-          <li className="hover:text-gray-300 cursor-pointer">Home</li>
-          <li className="hover:text-gray-300 cursor-pointer">About</li>
+          </Link>
+          <Link
+            href="/c/dashboard"
+            className="hover:text-gray-300 cursor-pointer"
+          >
+            Dashboard
+          </Link>
+          <Link href="#" className="hover:text-gray-300 cursor-pointer">
+            Home
+          </Link>
+          <Link href="#" className="hover:text-gray-300 cursor-pointer">
+            About
+          </Link>
         </ul>
         <button className="px-4 py-2 bg-white text-black text-sm hover:bg-gray-200 transition w-full">
           Login
