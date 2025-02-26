@@ -71,6 +71,7 @@ export default async function GET(req, res) {
 
         return res.status(200).json({
           message: "Success",
+          Key: random,
         });
       } catch (innerError) {
         console.error("Inner Error:", innerError);

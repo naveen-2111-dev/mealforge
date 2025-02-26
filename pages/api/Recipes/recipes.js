@@ -1,6 +1,7 @@
 import ConnectDb from "@/lib/connect";
 import { isApivalid } from "../middleware";
 import Joi from "joi";
+import { CountUpdater } from "../CountUpdater";
 
 const valid = Joi.object({
   page: Joi.number().integer().min(1).default(1),
@@ -12,6 +13,22 @@ export default async function GET(req, res) {
     await isApivalid(req, res, async () => {
       try {
         const db = await ConnectDb();
+        const email = req.headers["x-email"];
+        const limitFetch = await db.UserSchema.findOne({ mailId: email });
+
+        if (!limitFetch || typeof limitFetch.reqcount !== "number") {
+          return res
+            .status(400)
+            .json({ error: "User not found or invalid data" });
+        }
+
+        if (limitFetch.reqcount >= 4) {
+          return res.status(400).json({
+            error: "Limit reached please go for premium version",
+          });
+        }
+
+        await CountUpdater(email);
 
         const { page = 1, limit = 10 } = req.query;
         const { error } = valid.validate(req.query);
