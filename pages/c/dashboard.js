@@ -1,33 +1,78 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar.js";
-import { FiDatabase, FiUsers, FiZap } from "react-icons/fi";
+import {
+  FiDatabase,
+  FiAlertTriangle,
+  FiClock,
+  FiGlobe,
+  FiActivity,
+  FiZap,
+} from "react-icons/fi";
 import "tailwindcss/tailwind.css";
 
 export default function Dashboard() {
+  const [stats, setStats] = useState({
+    totalRequests: 0,
+    totalErrors: 0,
+    avgResponseTime: "0ms",
+    peakTraffic: "N/A",
+    mostUsedAPI: "/api/example",
+    topLocations: ["N/A"],
+  });
+
+  useEffect(() => {
+    async function fetchStats() {
+      const res = await fetch("/api/getDashboardStats");
+      const data = await res.json();
+      setStats(data);
+    }
+    fetchStats();
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
 
       <div className="flex-1 p-8">
-        <h1 className="text-4xl font-extrabold text-gray-800 mb-8">
-          API Dashboard
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-extrabold text-gray-800">
+            API Dashboard
+          </h1>
+          <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition">
+            Settings
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           <StatCard
             icon={<FiDatabase size={40} className="text-blue-500" />}
             title="Total Requests"
-            value="12,345"
+            value={stats.totalRequests}
           />
           <StatCard
-            icon={<FiUsers size={40} className="text-green-500" />}
-            title="Active Users"
-            value="1,234"
+            icon={<FiAlertTriangle size={40} className="text-red-500" />}
+            title="Total Errors"
+            value={stats.totalErrors}
+          />
+          <StatCard
+            icon={<FiClock size={40} className="text-green-500" />}
+            title="Avg Response Time"
+            value={stats.avgResponseTime}
+          />
+          <StatCard
+            icon={<FiActivity size={40} className="text-purple-500" />}
+            title="Peak Traffic Time"
+            value={stats.peakTraffic}
+          />
+          <StatCard
+            icon={<FiGlobe size={40} className="text-yellow-500" />}
+            title="Top Locations"
+            value={stats.topLocations.join(", ")}
           />
           <StatCard
             icon={<FiZap size={40} className="text-yellow-500" />}
-            title="Requests Per Minute"
-            value="78"
+            title="Requests per minute"
+            value={stats.topLocations.join(", ")}
           />
         </div>
       </div>
