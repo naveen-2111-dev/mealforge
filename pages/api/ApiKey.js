@@ -13,39 +13,35 @@ export default async function GET(req, res) {
     await isAuthenticated(req, res, async () => {
       try {
         const { error } = validation.validate(req.query);
-
         if (error) {
           return res.status(400).json({
             error: error.details[0].message,
           });
         }
+
         const db = await ConnectDb();
         const data = req.user;
+
         if (!data || !data.Email) {
-          return res.status(401).json({
-            error: "Login first...!",
-          });
+          return res.status(401).json({ error: "Login first...!" });
         }
 
-        const users = await db.APIschema.findOne({ email: data.Email });
-        let randomCount = users?.limit || 0;
+        const user = await db.APIschema.findOne({ email: data.Email });
+        let randomCount = user?.limit || 0;
 
-        const random = "cook_" + (await bcrypt.hash(data.Email, 10));
+        if (randomCount >= limit) {
+          return res.status(403).json({ error: "Free plan limit reached" });
+        }
+
         randomCount++;
 
-        if (randomCount > 1) {
-          await db.APIschema.updateMany(
-            { email: data.Email },
-            { $set: { limit: randomCount } },
-            { upsert: true }
-          );
-        }
+        const random = "cook_" + (await bcrypt.hash(data.Email, 10));
 
-        if (randomCount === limit) {
-          return res.status(401).json({
-            error: "free plan",
-          });
-        }
+        await db.APIschema.updateOne(
+          { email: data.Email },
+          { $set: { limit: randomCount } },
+          { upsert: true }
+        );
 
         let ip = null;
         try {
@@ -59,31 +55,22 @@ export default async function GET(req, res) {
           email: data.Email,
           Ip: ip,
           Key: random,
-          KeyName: `testkey_${randomCount + 1}`,
+          KeyName: `testkey_${randomCount}`, 
           limit: randomCount,
         });
 
         if (!inserted.insertedId) {
-          return res.status(401).json({
-            error: "failed",
-          });
+          return res.status(500).json({ error: "Failed to create API key" });
         }
 
-        return res.status(200).json({
-          message: "Success",
-          Key: random,
-        });
+        return res.status(200).json({ message: "Success", Key: random });
       } catch (innerError) {
         console.error("Inner Error:", innerError);
-        return res.status(500).json({
-          error: "An internal error occurred",
-        });
+        return res.status(500).json({ error: "An internal error occurred" });
       }
     });
   } catch (error) {
     console.error("Outer Error:", error);
-    return res.status(500).json({
-      error: "Authentication failed",
-    });
+    return res.status(500).json({ error: "Authentication failed" });
   }
 }

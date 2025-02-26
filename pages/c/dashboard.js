@@ -20,15 +20,6 @@ export default function Dashboard() {
     topLocations: ["N/A"],
   });
 
-  useEffect(() => {
-    async function fetchStats() {
-      const res = await fetch("/api/getDashboardStats");
-      const data = await res.json();
-      setStats(data);
-    }
-    fetchStats();
-  }, []);
-
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
